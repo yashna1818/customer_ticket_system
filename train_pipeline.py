@@ -19,7 +19,7 @@ def main():
     # df = df.sample(min(20000, len(df)), random_state=42)
     print(f"Training on {len(df)} rows.")
     
-    clf = TicketClassifier(model_type='logistic') # For baseline, or use 'naive_bayes'
+    clf = TicketClassifier()
     metrics = clf.train(df)
     print("Optimization complete. Saving artifacts to disk...")
     clf.save()

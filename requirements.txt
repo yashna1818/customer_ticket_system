@@ -9,3 +9,9 @@ soundfile
 textblob
 kagglehub
 gTTS
+fastapi
+uvicorn
+python-multipart
+deep-translator
+indic-transliteration
+langdetect

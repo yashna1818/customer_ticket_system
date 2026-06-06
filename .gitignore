@@ -10,3 +10,9 @@ env/
 # OS
 .DS_Store
 Thumbs.db
+
+# Database and Audio Files
+tickets.db
+*.wav
+*.mp3
+*.webm
