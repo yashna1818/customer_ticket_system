@@ -15,3 +15,5 @@ python-multipart
 deep-translator
 indic-transliteration
 langdetect
+matplotlib
+seaborn
