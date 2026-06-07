@@ -175,6 +175,30 @@ st.markdown("""
         background-color: #0b0e14 !important;
         border-right: 1px solid rgba(255, 255, 255, 0.05) !important;
     }
+    
+    /* Style Streamlit Tabs for a premium look */
+    button[data-baseweb="tab"] {
+        font-size: 1.15rem !important;
+        font-weight: 600 !important;
+        color: #a0aec0 !important;
+        border-bottom: 2px solid transparent !important;
+        transition: all 0.3s ease !important;
+        padding: 10px 24px !important;
+        background-color: transparent !important;
+    }
+    button[data-baseweb="tab"]:hover {
+        color: #6C63FF !important;
+    }
+    button[data-baseweb="tab"][aria-selected="true"] {
+        color: #FF6584 !important;
+        border-bottom-color: #FF6584 !important;
+    }
+    div[data-testid="stTabBar"] {
+        background: rgba(22, 28, 45, 0.4) !important;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
+        padding: 4px 12px 0 12px !important;
+        border-radius: 12px 12px 0 0 !important;
+    }
 </style>
 """, unsafe_allow_html=True)
 
@@ -183,14 +207,15 @@ st.markdown(f'<div class="main-title">{T("Voice Support AI Console")}</div>', un
 st.markdown(f'<div class="sub-title">{T("Route customer voice queries, analyze classification models, and manage live support ticket queues.")}</div>', unsafe_allow_html=True)
 st.markdown('<div class="grad-divider"></div>', unsafe_allow_html=True)
 
-# Navigation Sidebar
-st.sidebar.title(T("🧭 Navigation"))
-app_mode = st.sidebar.radio(
-    T("Go to:"), 
-    ["🏢 Departments Overview", "🎙️ AI Ticket Analyzer", "📞 Voice Call Agent", "📊 Model Benchmarking", "📥 Admin Ticket Queue"],
-    format_func=T
-)
-st.sidebar.markdown("---")
+# Main Tab Navigation
+tab_titles = [
+    "🏢 Departments Overview", 
+    "🎙️ AI Ticket Analyzer", 
+    "📞 Voice Call Agent", 
+    "📊 Model Benchmarking", 
+    "📥 Admin Ticket Queue"
+]
+tabs = st.tabs([T(title) for title in tab_titles])
 
 # Model Loading & Caching
 @st.cache_resource(show_spinner="Loading ML Models...")
@@ -326,636 +351,635 @@ def render_analysis_card(transcribed_text, active_model='logistic', ticket_id=No
 
 
 # --- 1. Departments Overview ---
-if app_mode == "🏢 Departments Overview":
-    st.markdown("### 🏦 Intelligent Ticket Routing Architecture", unsafe_allow_html=True)
-    st.info("👈 **Select a new AI tool from the sidebar to continue!**")
+with tabs[0]:
+        st.markdown("### 🏦 Intelligent Ticket Routing Architecture", unsafe_allow_html=True)
     
-    col1, col2 = st.columns(2)
-    with col1:
-        st.markdown("""
-        <div class="glass-card" style="text-align:center; background: linear-gradient(135deg, rgba(22, 28, 45, 0.7), rgba(255, 101, 132, 0.05));">
-            <div style="font-size:3.5rem; margin-bottom: 10px;">💳</div>
-            <h3 style="color:#FF6584; margin-top: 5px;">Finance & Billing</h3>
-            <p style="color:#cbd5e1; font-size: 1.05rem;">Automatically processes billing complaints, invoice inquiries, subscription fees, and cancellation requests.</p>
-            <span class="badge badge-Category" style="margin-top: 10px;">Finance & Billing</span>
-        </div>
-        <div class="glass-card" style="text-align:center; background: linear-gradient(135deg, rgba(22, 28, 45, 0.7), rgba(108, 99, 255, 0.05));">
-            <div style="font-size:3.5rem; margin-bottom: 10px;">🧑‍💻</div>
-            <h3 style="color:#6C63FF; margin-top: 5px;">IT & Engineering</h3>
-            <p style="color:#cbd5e1; font-size: 1.05rem;">Handles product crashes, tech issues, software bugs, speed degradation, or database synchronization concerns.</p>
-            <span class="badge badge-Category" style="margin-top: 10px;">IT & Engineering</span>
-        </div>
-        """, unsafe_allow_html=True)
-    with col2:
-        st.markdown("""
-        <div class="glass-card" style="text-align:center; background: linear-gradient(135deg, rgba(22, 28, 45, 0.7), rgba(56, 239, 125, 0.05));">
-            <div style="font-size:3.5rem; margin-bottom: 10px;">🔐</div>
-            <h3 style="color:#38EF7D; margin-top: 5px;">Security & Auth</h3>
-            <p style="color:#cbd5e1; font-size: 1.05rem;">Deals with customer account lockouts, password resets, unauthorized access reports, and authentication failures.</p>
-            <span class="badge badge-Category" style="margin-top: 10px;">Security & Auth</span>
-        </div>
-        <div class="glass-card" style="text-align:center; border: 1px solid rgba(108, 99, 255, 0.3); background: linear-gradient(135deg, rgba(108, 99, 255, 0.15), rgba(22, 28, 45, 0.8));">
-            <div style="font-size:3.5rem; margin-bottom: 10px;">⚡</div>
-            <h3 style="color:#6C63FF; margin-top: 5px;">Priority Escalation</h3>
-            <p style="color:#cbd5e1; font-size: 1.05rem;">Triggered immediately upon matching high-risk keywords (e.g. hacked, legal, fraud, broken) or detecting negative customer sentiment.</p>
-            <span class="badge badge-High" style="margin-top: 10px;">High Urgency Boost</span>
-        </div>
-        """, unsafe_allow_html=True)
+        col1, col2 = st.columns(2)
+        with col1:
+            st.markdown("""
+            <div class="glass-card" style="text-align:center; background: linear-gradient(135deg, rgba(22, 28, 45, 0.7), rgba(255, 101, 132, 0.05));">
+                <div style="font-size:3.5rem; margin-bottom: 10px;">💳</div>
+                <h3 style="color:#FF6584; margin-top: 5px;">Finance & Billing</h3>
+                <p style="color:#cbd5e1; font-size: 1.05rem;">Automatically processes billing complaints, invoice inquiries, subscription fees, and cancellation requests.</p>
+                <span class="badge badge-Category" style="margin-top: 10px;">Finance & Billing</span>
+            </div>
+            <div class="glass-card" style="text-align:center; background: linear-gradient(135deg, rgba(22, 28, 45, 0.7), rgba(108, 99, 255, 0.05));">
+                <div style="font-size:3.5rem; margin-bottom: 10px;">🧑‍💻</div>
+                <h3 style="color:#6C63FF; margin-top: 5px;">IT & Engineering</h3>
+                <p style="color:#cbd5e1; font-size: 1.05rem;">Handles product crashes, tech issues, software bugs, speed degradation, or database synchronization concerns.</p>
+                <span class="badge badge-Category" style="margin-top: 10px;">IT & Engineering</span>
+            </div>
+            """, unsafe_allow_html=True)
+        with col2:
+            st.markdown("""
+            <div class="glass-card" style="text-align:center; background: linear-gradient(135deg, rgba(22, 28, 45, 0.7), rgba(56, 239, 125, 0.05));">
+                <div style="font-size:3.5rem; margin-bottom: 10px;">🔐</div>
+                <h3 style="color:#38EF7D; margin-top: 5px;">Security & Auth</h3>
+                <p style="color:#cbd5e1; font-size: 1.05rem;">Deals with customer account lockouts, password resets, unauthorized access reports, and authentication failures.</p>
+                <span class="badge badge-Category" style="margin-top: 10px;">Security & Auth</span>
+            </div>
+            <div class="glass-card" style="text-align:center; border: 1px solid rgba(108, 99, 255, 0.3); background: linear-gradient(135deg, rgba(108, 99, 255, 0.15), rgba(22, 28, 45, 0.8));">
+                <div style="font-size:3.5rem; margin-bottom: 10px;">⚡</div>
+                <h3 style="color:#6C63FF; margin-top: 5px;">Priority Escalation</h3>
+                <p style="color:#cbd5e1; font-size: 1.05rem;">Triggered immediately upon matching high-risk keywords (e.g. hacked, legal, fraud, broken) or detecting negative customer sentiment.</p>
+                <span class="badge badge-High" style="margin-top: 10px;">High Urgency Boost</span>
+            </div>
+            """, unsafe_allow_html=True)
 
 
 # --- 2. AI Ticket Analyzer ---
-elif app_mode == "🎙️ AI Ticket Analyzer":
-    if not is_loaded:
-        st.error("🚨 ML Models Missing! Train model first.")
-        st.stop()
+with tabs[1]:
+        if not is_loaded:
+            st.error("🚨 ML Models Missing! Train model first.")
+        pass
 
-    st.sidebar.header("🕹️ Ticket Input Controls")
-    input_method = st.sidebar.radio("Select Input Flow", ["🎙️ Single Voice Note", "📁 Upload File", "⌨️ Text Editor"])
+        st.sidebar.header("🕹️ Ticket Input Controls")
+        input_method = st.sidebar.radio("Select Input Flow", ["🎙️ Single Voice Note", "📁 Upload File", "⌨️ Text Editor"])
     
-    audio_path = None
-    text_input = ""
+        audio_path = None
+        text_input = ""
 
-    col_input1, col_input2, col_input3 = st.columns([1, 6, 1])
-    with col_input2:
-        st.markdown("<div class='glass-card'>", unsafe_allow_html=True)
-        st.write("#### 📝 Customer Query Input")
-        if input_method == "🎙️ Single Voice Note":
-            audio_value = st.audio_input("Record Audio", label_visibility="hidden")
-            if audio_value:
-                with tempfile.NamedTemporaryFile(delete=False, suffix=".wav") as f:
-                    f.write(audio_value.getbuffer())
-                    audio_path = f.name
-        elif input_method == "📁 Upload File":
-            uploaded_file = st.file_uploader("Upload customer audio (.wav, .mp3)", type=["wav", "mp3", "m4a", "ogg"])
-            if uploaded_file is not None:
-                with tempfile.NamedTemporaryFile(delete=False, suffix=".wav") as f:
-                    f.write(uploaded_file.getbuffer())
-                    audio_path = f.name
-        else:
-            text_input = st.text_area("✍️ Customer Message Context", height=150, placeholder="Type customer query here... e.g. I cannot access my account because my password reset is broken.")
+        col_input1, col_input2, col_input3 = st.columns([1, 6, 1])
+        with col_input2:
+            st.markdown("<div class='glass-card'>", unsafe_allow_html=True)
+            st.write("#### 📝 Customer Query Input")
+            if input_method == "🎙️ Single Voice Note":
+                audio_value = st.audio_input("Record Audio", label_visibility="hidden")
+                if audio_value:
+                    with tempfile.NamedTemporaryFile(delete=False, suffix=".wav") as f:
+                        f.write(audio_value.getbuffer())
+                        audio_path = f.name
+            elif input_method == "📁 Upload File":
+                uploaded_file = st.file_uploader("Upload customer audio (.wav, .mp3)", type=["wav", "mp3", "m4a", "ogg"])
+                if uploaded_file is not None:
+                    with tempfile.NamedTemporaryFile(delete=False, suffix=".wav") as f:
+                        f.write(uploaded_file.getbuffer())
+                        audio_path = f.name
+            else:
+                text_input = st.text_area("✍️ Customer Message Context", height=150, placeholder="Type customer query here... e.g. I cannot access my account because my password reset is broken.")
 
-        analyze_btn = st.button("🚀 Analyze Support Ticket", use_container_width=True, type="primary")
-        st.markdown("</div>", unsafe_allow_html=True)
+            analyze_btn = st.button("🚀 Analyze Support Ticket", use_container_width=True, type="primary")
+            st.markdown("</div>", unsafe_allow_html=True)
 
-    if analyze_btn:
-        if not audio_path and not text_input.strip():
-            st.warning("⚠️ Please provide an audio recording, file, or text input first.")
-        else:
-            with st.spinner("🤖 Whisper is transcribing & ML is analyzing..."):
-                if audio_path:
-                    transcribed_text = transcribe_audio(audio_path, model_name=whisper_model_size, api_key=openai_api_key, language=target_lang)
-                    try:
-                        os.remove(audio_path)
-                    except Exception:
-                        pass
-                else:
-                    transcribed_text = text_input
-
-                if transcribed_text.strip():
-                    # Language detection & translation
-                    detected_lang = detect_language(transcribed_text)
-                    if detected_lang in ['kn', 'hi']:
-                        transcribed_text_en = translate_text(transcribed_text, source_lang=detected_lang, target_lang='en')
+        if analyze_btn:
+            if not audio_path and not text_input.strip():
+                st.warning("⚠️ Please provide an audio recording, file, or text input first.")
+            else:
+                with st.spinner("🤖 Whisper is transcribing & ML is analyzing..."):
+                    if audio_path:
+                        transcribed_text = transcribe_audio(audio_path, model_name=whisper_model_size, api_key=openai_api_key, language=target_lang)
+                        try:
+                            os.remove(audio_path)
+                        except Exception:
+                            pass
                     else:
-                        transcribed_text_en = transcribed_text
+                        transcribed_text = text_input
 
-                    # Calculate ML classification on the English translation
-                    all_preds = clf.predict_all(transcribed_text_en)
-                    category = all_preds[active_model]
-                    sentiment, priority = get_sentiment_and_priority(transcribed_text_en, category=category)
+                    if transcribed_text.strip():
+                        # Language detection & translation
+                        detected_lang = detect_language(transcribed_text)
+                        if detected_lang in ['kn', 'hi']:
+                            transcribed_text_en = translate_text(transcribed_text, source_lang=detected_lang, target_lang='en')
+                        else:
+                            transcribed_text_en = transcribed_text
+
+                        # Calculate ML classification on the English translation
+                        all_preds = clf.predict_all(transcribed_text_en)
+                        category = all_preds[active_model]
+                        sentiment, priority = get_sentiment_and_priority(transcribed_text_en, category=category)
                     
-                    # Save to DB
-                    ticket_id = add_ticket(
-                        transcript=transcribed_text,
-                        category=category,
-                        sentiment=sentiment,
-                        priority=priority,
-                        model_used=active_model,
-                        language=detected_lang,
-                        translation=transcribed_text_en if detected_lang in ['kn', 'hi'] else ""
-                    )
+                        # Save to DB
+                        ticket_id = add_ticket(
+                            transcript=transcribed_text,
+                            category=category,
+                            sentiment=sentiment,
+                            priority=priority,
+                            model_used=active_model,
+                            language=detected_lang,
+                            translation=transcribed_text_en if detected_lang in ['kn', 'hi'] else ""
+                        )
                     
-                    st.success(f"🎟️ Ticket #{ticket_id} created and queued successfully!")
-                    render_analysis_card(transcribed_text, active_model, ticket_id=ticket_id, translation=transcribed_text_en, lang=detected_lang)
-                else:
-                    st.error("Input was empty or unintelligible.")
+                        st.success(f"🎟️ Ticket #{ticket_id} created and queued successfully!")
+                        render_analysis_card(transcribed_text, active_model, ticket_id=ticket_id, translation=transcribed_text_en, lang=detected_lang)
+                    else:
+                        st.error("Input was empty or unintelligible.")
 
 
 
 # --- 3. Voice Call Agent ---
-elif app_mode == "📞 Voice Call Agent":
-    if not is_loaded:
-        st.error("🚨 ML Models Missing! Train model first.")
-        st.stop()
+with tabs[2]:
+        if not is_loaded:
+            st.error("🚨 ML Models Missing! Train model first.")
+        pass
         
-    st.markdown(f"### 📞 {T('Real-Time Live Phone Call Support Simulation')}")
-    st.markdown(T("Experience a two-way AI voice call! Speak to the Agent, and the Agent will reply back. Once the call is resolved, the transcript is analyzed and queued in the DB."))
+        st.markdown(f"### 📞 {T('Real-Time Live Phone Call Support Simulation')}")
+        st.markdown(T("Experience a two-way AI voice call! Speak to the Agent, and the Agent will reply back. Once the call is resolved, the transcript is analyzed and queued in the DB."))
     
-    if "messages" not in st.session_state:
-        st.session_state.messages = []
-        st.session_state.chat_finished = False
-        greeting = T("Hello! Welcome to our Support Desk. I am your AI agent. Please speak clearly using your microphone, and tell me: How can I assist you today?")
-        st.session_state.messages.append({"role": "assistant", "content": greeting})
-        st.session_state.pending_audio = synthesize_speech(greeting, lang=target_lang)
-        st.session_state.agent_lang = target_lang
+        if "messages" not in st.session_state:
+            st.session_state.messages = []
+            st.session_state.chat_finished = False
+            greeting = T("Hello! Welcome to our Support Desk. I am your AI agent. Please speak clearly using your microphone, and tell me: How can I assist you today?")
+            st.session_state.messages.append({"role": "assistant", "content": greeting})
+            st.session_state.pending_audio = synthesize_speech(greeting, lang=target_lang)
+            st.session_state.agent_lang = target_lang
 
-    # Initialize audio cache tracker
-    if "last_processed_audio_hash" not in st.session_state:
-        st.session_state.last_processed_audio_hash = None
-    if "audio_input_counter" not in st.session_state:
-        st.session_state.audio_input_counter = 0
-
-    # Render Visual Conversation History
-    for msg in st.session_state.messages:
-        with st.chat_message(msg["role"]):
-            st.write(msg["content"])
-            if msg["role"] == "assistant" and msg.get("transliterated"):
-                st.caption(f"✍️ *Transliteration (Latin):* {msg['transliterated']}")
-            
-    # Autoplay pending AI voice if exists
-    if "pending_audio" in st.session_state and st.session_state.pending_audio is not None:
-        st.audio(st.session_state.pending_audio, format="audio/mp3", autoplay=True)
-        # Clear it so it doesn't replay when the user talks back
-        st.session_state.pending_audio = None
-            
-    if not st.session_state.chat_finished:
-        st.markdown("---")
-        # Voice Input Component with dynamic key to auto-reset after each submission
-        audio_value = st.audio_input(
-            T("🗣️ It's your turn to speak..."), 
-            key=f"voice_agent_audio_{st.session_state.audio_input_counter}"
-        )
-        
-        if audio_value:
-            audio_bytes = audio_value.getbuffer().tobytes()
-            audio_hash = hash(audio_bytes)
-            
-            # Make sure we only process this recording ONCE to prevent infinite looping
-            if st.session_state.last_processed_audio_hash != audio_hash:
-                st.session_state.last_processed_audio_hash = audio_hash
-                
-                with st.spinner("Agent is listening & transcribing..."):
-                    with tempfile.NamedTemporaryFile(delete=False, suffix=".wav") as f:
-                        f.write(audio_bytes)
-                        audio_path = f.name
-                        
-                    user_text = transcribe_audio(audio_path, model_name=whisper_model_size, api_key=openai_api_key, language=target_lang)
-                    os.remove(audio_path)
-                    
-                    st.session_state.messages.append({"role": "user", "content": user_text})
-                    st.session_state.audio_input_counter += 1 # Reset the input widget
-                    st.rerun()  # Instantly display user message
-            else:
-                pass # Already processed this specific buffer
-                
-        # If the last message was from the User, explicitly Generate AI Response!
-        if len(st.session_state.messages) > 0 and st.session_state.messages[-1]["role"] == "user":
-            with st.spinner("Agent is thinking and generating a voice reply..."):
-                time.sleep(1) # Fake realistic latency
-                user_msgs = [m for m in st.session_state.messages if m["role"] == "user"]
-                last_user_text = user_msgs[-1]["content"]
-                
-                # Auto-detect language of user spoke text
-                detected_lang = detect_language(last_user_text)
-                st.session_state.agent_lang = detected_lang
-                
-                # Translate to English for keyword matching logic
-                last_user_text_en = translate_text(last_user_text, source_lang=detected_lang, target_lang='en').lower()
-                
-                # Dynamic multi-turn voice logic based on customer utterance keywords in English
-                if len(user_msgs) == 1:
-                    if any(w in last_user_text_en for w in ['log in', 'login', 'password', 'account', 'auth', 'access', 'blocked', 'locked', 'reset']):
-                        reply_en = "I understand you are having account access issues. Could you please specify if you are seeing any specific error code, and let me know if you tried resetting it?"
-                    elif any(w in last_user_text_en for w in ['bill', 'payment', 'charge', 'invoice', 'fee', 'deduct', 'money', 'card', 'visa', 'mastercard']):
-                        reply_en = "I see this is regarding a billing or payment concern. Could you confirm the last four digits of your card, or if you have an invoice number?"
-                    elif any(w in last_user_text_en for w in ['refund', 'return', 'cancel', 'subscription']):
-                        reply_en = "Got it, a refund or subscription query. Could you let me know the purchase date and whether the product has been cancelled?"
-                    elif any(w in last_user_text_en for w in ['bug', 'crash', 'error', 'sync', 'load', 'update', 'performance', 'tech', 'software', 'fail', 'slow', 'broken']):
-                        reply_en = "It sounds like a technical issue. Could you tell me which operating system or browser you are using when this happens?"
-                    else:
-                        reply_en = "I've noted that down. Could you provide a bit more detail about the exact issue so I can route it to the right team?"
-                else:
-                    # Conclude conversation
-                    reply_en = "Thank you so much for securely providing those details! Our call is now concluded. I will immediately escalate this transcript to the optimal department. Have a nice day!"
-                    st.session_state.chat_finished = True
-                
-                # Translate reply back to detected language
-                reply = translate_text(reply_en, source_lang='en', target_lang=detected_lang)
-                
-                # Generate transliteration if language is Kannada or Hindi
-                transliterated = ""
-                if detected_lang in ['kn', 'hi']:
-                    transliterated = transliterate_text(reply, detected_lang)
-                    
-                st.session_state.messages.append({
-                    "role": "assistant", 
-                    "content": reply,
-                    "transliterated": transliterated
-                })
-                st.session_state.pending_audio = synthesize_speech(reply, lang=detected_lang) # Generate Audio!
-                st.rerun()
- 
-    else:
-        st.success("☎️ **Call Dropped.** Conversation Archived. Generating Live ML Routing Trace...")
-        
-        # Compile user context to analyze
-        full_transcript = " ".join([m["content"] for m in st.session_state.messages if m["role"] == "user"])
-        
-        # Auto-detect language
-        detected_lang = st.session_state.get("agent_lang", target_lang)
-        
-        # Translate to English for ML pipeline
-        if detected_lang in ['kn', 'hi']:
-            full_transcript_en = translate_text(full_transcript, source_lang=detected_lang, target_lang='en')
-        else:
-            full_transcript_en = full_transcript
-            
-        # Calculate ML classification
-        all_preds = clf.predict_all(full_transcript_en)
-        category = all_preds[active_model]
-        sentiment, priority = get_sentiment_and_priority(full_transcript_en, category=category)
-        
-        # Save to DB
-        ticket_id = add_ticket(
-            transcript=full_transcript,
-            category=category,
-            sentiment=sentiment,
-            priority=priority,
-            model_used=active_model,
-            language=detected_lang,
-            translation=full_transcript_en if detected_lang in ['kn', 'hi'] else ""
-        )
-        
-        render_analysis_card(full_transcript, active_model, ticket_id=ticket_id, translation=full_transcript_en, lang=detected_lang)
-        
-        if st.button("🔄 Initiate New Call"):
-            if "messages" in st.session_state:
-                del st.session_state.messages
-            if "chat_finished" in st.session_state:
-                del st.session_state.chat_finished
+        # Initialize audio cache tracker
+        if "last_processed_audio_hash" not in st.session_state:
             st.session_state.last_processed_audio_hash = None
-            st.rerun()
+        if "audio_input_counter" not in st.session_state:
+            st.session_state.audio_input_counter = 0
+
+        # Render Visual Conversation History
+        for msg in st.session_state.messages:
+            with st.chat_message(msg["role"]):
+                st.write(msg["content"])
+                if msg["role"] == "assistant" and msg.get("transliterated"):
+                    st.caption(f"✍️ *Transliteration (Latin):* {msg['transliterated']}")
+            
+        # Autoplay pending AI voice if exists
+        if "pending_audio" in st.session_state and st.session_state.pending_audio is not None:
+            st.audio(st.session_state.pending_audio, format="audio/mp3", autoplay=True)
+            # Clear it so it doesn't replay when the user talks back
+            st.session_state.pending_audio = None
+            
+        if not st.session_state.chat_finished:
+            st.markdown("---")
+            # Voice Input Component with dynamic key to auto-reset after each submission
+            audio_value = st.audio_input(
+                T("🗣️ It's your turn to speak..."), 
+                key=f"voice_agent_audio_{st.session_state.audio_input_counter}"
+            )
+        
+            if audio_value:
+                audio_bytes = audio_value.getbuffer().tobytes()
+                audio_hash = hash(audio_bytes)
+            
+                # Make sure we only process this recording ONCE to prevent infinite looping
+                if st.session_state.last_processed_audio_hash != audio_hash:
+                    st.session_state.last_processed_audio_hash = audio_hash
+                
+                    with st.spinner("Agent is listening & transcribing..."):
+                        with tempfile.NamedTemporaryFile(delete=False, suffix=".wav") as f:
+                            f.write(audio_bytes)
+                            audio_path = f.name
+                        
+                        user_text = transcribe_audio(audio_path, model_name=whisper_model_size, api_key=openai_api_key, language=target_lang)
+                        os.remove(audio_path)
+                    
+                        st.session_state.messages.append({"role": "user", "content": user_text})
+                        st.session_state.audio_input_counter += 1 # Reset the input widget
+                        st.rerun()  # Instantly display user message
+                else:
+                    pass # Already processed this specific buffer
+                
+            # If the last message was from the User, explicitly Generate AI Response!
+            if len(st.session_state.messages) > 0 and st.session_state.messages[-1]["role"] == "user":
+                with st.spinner("Agent is thinking and generating a voice reply..."):
+                    time.sleep(1) # Fake realistic latency
+                    user_msgs = [m for m in st.session_state.messages if m["role"] == "user"]
+                    last_user_text = user_msgs[-1]["content"]
+                
+                    # Auto-detect language of user spoke text
+                    detected_lang = detect_language(last_user_text)
+                    st.session_state.agent_lang = detected_lang
+                
+                    # Translate to English for keyword matching logic
+                    last_user_text_en = translate_text(last_user_text, source_lang=detected_lang, target_lang='en').lower()
+                
+                    # Dynamic multi-turn voice logic based on customer utterance keywords in English
+                    if len(user_msgs) == 1:
+                        if any(w in last_user_text_en for w in ['log in', 'login', 'password', 'account', 'auth', 'access', 'blocked', 'locked', 'reset']):
+                            reply_en = "I understand you are having account access issues. Could you please specify if you are seeing any specific error code, and let me know if you tried resetting it?"
+                        elif any(w in last_user_text_en for w in ['bill', 'payment', 'charge', 'invoice', 'fee', 'deduct', 'money', 'card', 'visa', 'mastercard']):
+                            reply_en = "I see this is regarding a billing or payment concern. Could you confirm the last four digits of your card, or if you have an invoice number?"
+                        elif any(w in last_user_text_en for w in ['refund', 'return', 'cancel', 'subscription']):
+                            reply_en = "Got it, a refund or subscription query. Could you let me know the purchase date and whether the product has been cancelled?"
+                        elif any(w in last_user_text_en for w in ['bug', 'crash', 'error', 'sync', 'load', 'update', 'performance', 'tech', 'software', 'fail', 'slow', 'broken']):
+                            reply_en = "It sounds like a technical issue. Could you tell me which operating system or browser you are using when this happens?"
+                        else:
+                            reply_en = "I've noted that down. Could you provide a bit more detail about the exact issue so I can route it to the right team?"
+                    else:
+                        # Conclude conversation
+                        reply_en = "Thank you so much for securely providing those details! Our call is now concluded. I will immediately escalate this transcript to the optimal department. Have a nice day!"
+                        st.session_state.chat_finished = True
+                
+                    # Translate reply back to detected language
+                    reply = translate_text(reply_en, source_lang='en', target_lang=detected_lang)
+                
+                    # Generate transliteration if language is Kannada or Hindi
+                    transliterated = ""
+                    if detected_lang in ['kn', 'hi']:
+                        transliterated = transliterate_text(reply, detected_lang)
+                    
+                    st.session_state.messages.append({
+                        "role": "assistant", 
+                        "content": reply,
+                        "transliterated": transliterated
+                    })
+                    st.session_state.pending_audio = synthesize_speech(reply, lang=detected_lang) # Generate Audio!
+                    st.rerun()
+ 
+        else:
+            st.success("☎️ **Call Dropped.** Conversation Archived. Generating Live ML Routing Trace...")
+        
+            # Compile user context to analyze
+            full_transcript = " ".join([m["content"] for m in st.session_state.messages if m["role"] == "user"])
+        
+            # Auto-detect language
+            detected_lang = st.session_state.get("agent_lang", target_lang)
+        
+            # Translate to English for ML pipeline
+            if detected_lang in ['kn', 'hi']:
+                full_transcript_en = translate_text(full_transcript, source_lang=detected_lang, target_lang='en')
+            else:
+                full_transcript_en = full_transcript
+            
+            # Calculate ML classification
+            all_preds = clf.predict_all(full_transcript_en)
+            category = all_preds[active_model]
+            sentiment, priority = get_sentiment_and_priority(full_transcript_en, category=category)
+        
+            # Save to DB
+            ticket_id = add_ticket(
+                transcript=full_transcript,
+                category=category,
+                sentiment=sentiment,
+                priority=priority,
+                model_used=active_model,
+                language=detected_lang,
+                translation=full_transcript_en if detected_lang in ['kn', 'hi'] else ""
+            )
+        
+            render_analysis_card(full_transcript, active_model, ticket_id=ticket_id, translation=full_transcript_en, lang=detected_lang)
+        
+            if st.button("🔄 Initiate New Call"):
+                if "messages" in st.session_state:
+                    del st.session_state.messages
+                if "chat_finished" in st.session_state:
+                    del st.session_state.chat_finished
+                st.session_state.last_processed_audio_hash = None
+                st.rerun()
 
 
 # --- 4. Model Benchmarking ---
-elif app_mode == "📊 Model Benchmarking":
-    st.markdown("### 📊 Multi-Model Performance Comparison")
-    st.markdown("Compare the performance of our 3 trained models: **Logistic Regression**, **Naive Bayes (MultinomialNB)**, and **Support Vector Machine (LinearSVC)**.")
+with tabs[3]:
+        st.markdown("### 📊 Multi-Model Performance Comparison")
+        st.markdown("Compare the performance of our 3 trained models: **Logistic Regression**, **Naive Bayes (MultinomialNB)**, and **Support Vector Machine (LinearSVC)**.")
     
-    if not is_loaded or not clf.metrics:
-        st.warning("⚠️ Benchmarking metrics are not available. Please run model training below to generate metrics.")
-    else:
-        # Load and display metrics
-        metrics_df = pd.DataFrame(clf.metrics).T
-        metrics_df = metrics_df.round(4)
+        if not is_loaded or not clf.metrics:
+            st.warning("⚠️ Benchmarking metrics are not available. Please run model training below to generate metrics.")
+        else:
+            # Load and display metrics
+            metrics_df = pd.DataFrame(clf.metrics).T
+            metrics_df = metrics_df.round(4)
         
-        col_m1, col_m2 = st.columns([1.2, 1])
-        with col_m1:
-            st.markdown("<div class='glass-card'>", unsafe_allow_html=True)
-            st.subheader("📈 Performance Metrics Table")
-            st.table(metrics_df)
-            st.markdown("</div>", unsafe_allow_html=True)
+            col_m1, col_m2 = st.columns([1.2, 1])
+            with col_m1:
+                st.markdown("<div class='glass-card'>", unsafe_allow_html=True)
+                st.subheader("📈 Performance Metrics Table")
+                st.table(metrics_df)
+                st.markdown("</div>", unsafe_allow_html=True)
         
-        with col_m2:
-            st.markdown("<div class='glass-card'>", unsafe_allow_html=True)
-            st.subheader("📊 F1-Score & Accuracy Comparison")
-            chart_data = metrics_df[['Accuracy', 'F1-score']]
-            st.bar_chart(chart_data)
-            st.markdown("</div>", unsafe_allow_html=True)
+            with col_m2:
+                st.markdown("<div class='glass-card'>", unsafe_allow_html=True)
+                st.subheader("📊 F1-Score & Accuracy Comparison")
+                chart_data = metrics_df[['Accuracy', 'F1-score']]
+                st.bar_chart(chart_data)
+                st.markdown("</div>", unsafe_allow_html=True)
             
-        # Model detailed plots section
-        st.markdown("<div class='glass-card'>", unsafe_allow_html=True)
-        st.subheader("🧩 Advanced Model Diagnostic Visualizations")
+            # Model detailed plots section
+            st.markdown("<div class='glass-card'>", unsafe_allow_html=True)
+            st.subheader("🧩 Advanced Model Diagnostic Visualizations")
         
-        bench_model_ui = st.selectbox(
-            "Select Model to Inspect:",
-            ["Logistic Regression", "Naive Bayes", "Support Vector Machine (SVC)"]
-        )
-        model_ui_map = {
-            "Logistic Regression": "logistic",
-            "Naive Bayes": "naive_bayes",
-            "Support Vector Machine (SVC)": "svc"
-        }
-        bench_model_key = model_ui_map[bench_model_ui]
+            bench_model_ui = st.selectbox(
+                "Select Model to Inspect:",
+                ["Logistic Regression", "Naive Bayes", "Support Vector Machine (SVC)"]
+            )
+            model_ui_map = {
+                "Logistic Regression": "logistic",
+                "Naive Bayes": "naive_bayes",
+                "Support Vector Machine (SVC)": "svc"
+            }
+            bench_model_key = model_ui_map[bench_model_ui]
         
-        plot_col1, plot_col2 = st.columns(2)
+            plot_col1, plot_col2 = st.columns(2)
         
-        with plot_col1:
-            if clf.confusion_matrices and bench_model_key in clf.confusion_matrices:
-                st.write("**Confusion Matrix Heatmap**")
-                fig, ax = plt.subplots(figsize=(5.5, 4.5))
-                cm_data = np.array(clf.confusion_matrices[bench_model_key])
-                classes = clf.classes if clf.classes else ["Account Access", "Billing Issue", "General Inquiry", "Refund Request", "Technical Issue"]
-                
-                # Plotting using Seaborn
-                sns.heatmap(
-                    cm_data, 
-                    annot=True, 
-                    fmt='d', 
-                    cmap='Blues', 
-                    xticklabels=classes, 
-                    yticklabels=classes, 
-                    ax=ax, 
-                    cbar=False
-                )
-                plt.xticks(rotation=45, ha='right')
-                plt.yticks(rotation=0)
-                ax.set_ylabel("True Label", color="white")
-                ax.set_xlabel("Predicted Label", color="white")
-                fig.patch.set_facecolor('#0e1117')
-                ax.set_facecolor('#0e1117')
-                ax.tick_params(colors='white')
-                ax.title.set_color('white')
-                plt.tight_layout()
-                st.pyplot(fig)
-            else:
-                st.info("No confusion matrix loaded. Please retrain models to compute.")
-                
-        with plot_col2:
-            if clf.feature_importances and bench_model_key in clf.feature_importances:
-                st.write("**Top Vocabulary Feature Importances**")
-                classes = clf.classes if clf.classes else ["Account Access", "Billing Issue", "General Inquiry", "Refund Request", "Technical Issue"]
-                selected_class = st.selectbox("Inspect Word Predictors for Category:", classes)
-                
-                features = clf.feature_importances[bench_model_key].get(selected_class, [])
-                if features:
-                    words = [f[0] for f in features][:12]
-                    weights = [f[1] for f in features][:12]
-                    
+            with plot_col1:
+                if clf.confusion_matrices and bench_model_key in clf.confusion_matrices:
+                    st.write("**Confusion Matrix Heatmap**")
                     fig, ax = plt.subplots(figsize=(5.5, 4.5))
-                    colors = sns.color_palette("plasma", len(words))
-                    ax.barh(words[::-1], weights[::-1], color=colors)
-                    ax.set_xlabel("TF-IDF Correlation Coefficient / Log Prob", color="white")
-                    ax.set_title(f"Predictive Keywords: '{selected_class}'", color="white")
+                    cm_data = np.array(clf.confusion_matrices[bench_model_key])
+                    classes = clf.classes if clf.classes else ["Account Access", "Billing Issue", "General Inquiry", "Refund Request", "Technical Issue"]
+                
+                    # Plotting using Seaborn
+                    sns.heatmap(
+                        cm_data, 
+                        annot=True, 
+                        fmt='d', 
+                        cmap='Blues', 
+                        xticklabels=classes, 
+                        yticklabels=classes, 
+                        ax=ax, 
+                        cbar=False
+                    )
+                    plt.xticks(rotation=45, ha='right')
+                    plt.yticks(rotation=0)
+                    ax.set_ylabel("True Label", color="white")
+                    ax.set_xlabel("Predicted Label", color="white")
                     fig.patch.set_facecolor('#0e1117')
                     ax.set_facecolor('#0e1117')
                     ax.tick_params(colors='white')
                     ax.title.set_color('white')
-                    ax.xaxis.label.set_color('white')
                     plt.tight_layout()
                     st.pyplot(fig)
                 else:
-                    st.info(f"No key words mapped for class '{selected_class}'")
-            else:
-                st.info("No feature importances loaded. Please retrain models to compute.")
-        st.markdown("</div>", unsafe_allow_html=True)
+                    st.info("No confusion matrix loaded. Please retrain models to compute.")
+                
+            with plot_col2:
+                if clf.feature_importances and bench_model_key in clf.feature_importances:
+                    st.write("**Top Vocabulary Feature Importances**")
+                    classes = clf.classes if clf.classes else ["Account Access", "Billing Issue", "General Inquiry", "Refund Request", "Technical Issue"]
+                    selected_class = st.selectbox("Inspect Word Predictors for Category:", classes)
+                
+                    features = clf.feature_importances[bench_model_key].get(selected_class, [])
+                    if features:
+                        words = [f[0] for f in features][:12]
+                        weights = [f[1] for f in features][:12]
+                    
+                        fig, ax = plt.subplots(figsize=(5.5, 4.5))
+                        colors = sns.color_palette("plasma", len(words))
+                        ax.barh(words[::-1], weights[::-1], color=colors)
+                        ax.set_xlabel("TF-IDF Correlation Coefficient / Log Prob", color="white")
+                        ax.set_title(f"Predictive Keywords: '{selected_class}'", color="white")
+                        fig.patch.set_facecolor('#0e1117')
+                        ax.set_facecolor('#0e1117')
+                        ax.tick_params(colors='white')
+                        ax.title.set_color('white')
+                        ax.xaxis.label.set_color('white')
+                        plt.tight_layout()
+                        st.pyplot(fig)
+                    else:
+                        st.info(f"No key words mapped for class '{selected_class}'")
+                else:
+                    st.info("No feature importances loaded. Please retrain models to compute.")
+            st.markdown("</div>", unsafe_allow_html=True)
 
-    # Interactive ML Retraining Panel
-    st.markdown("<div class='glass-card'>", unsafe_allow_html=True)
-    st.subheader("⚙️ Live Interactive ML Training Panel")
-    st.markdown("Configure classifier parameters, modify dataset split size, and retrain all models on the fly.")
+        # Interactive ML Retraining Panel
+        st.markdown("<div class='glass-card'>", unsafe_allow_html=True)
+        st.subheader("⚙️ Live Interactive ML Training Panel")
+        st.markdown("Configure classifier parameters, modify dataset split size, and retrain all models on the fly.")
     
-    with st.form("interactive_train_form"):
-        col_tr1, col_tr2 = st.columns(2)
-        with col_tr1:
-            train_size = st.slider(
-                "Training Dataset Subset Size:", 
-                min_value=1000, 
-                max_value=50000, 
-                value=25000, 
-                step=1000,
-                help="Higher sample sizes improve generalization, while smaller sizes train faster."
-            )
-            split_ratio = st.slider("Train/Test Split Ratio:", min_value=0.1, max_value=0.5, value=0.2, step=0.05)
-            max_feats = st.slider("TF-IDF Max Features (Vocabulary Size):", min_value=1000, max_value=15000, value=8000, step=500)
+        with st.form("interactive_train_form"):
+            col_tr1, col_tr2 = st.columns(2)
+            with col_tr1:
+                train_size = st.slider(
+                    "Training Dataset Subset Size:", 
+                    min_value=1000, 
+                    max_value=50000, 
+                    value=25000, 
+                    step=1000,
+                    help="Higher sample sizes improve generalization, while smaller sizes train faster."
+                )
+                split_ratio = st.slider("Train/Test Split Ratio:", min_value=0.1, max_value=0.5, value=0.2, step=0.05)
+                max_feats = st.slider("TF-IDF Max Features (Vocabulary Size):", min_value=1000, max_value=15000, value=8000, step=500)
             
-        with col_tr2:
-            logistic_c = st.number_input("Logistic Regression Regularization strength (C):", min_value=0.01, max_value=20.0, value=1.0, step=0.1)
-            ngram_sel = st.selectbox(
-                "TF-IDF Vectorization Word N-Gram Range:",
-                ["(1, 1) (Unigrams only)", "(1, 2) (Unigrams + Bigrams)", "(1, 3) (Unigrams + Bigrams + Trigrams)"],
-                index=1
-            )
-            ngram_map = {
-                "(1, 1) (Unigrams only)": (1, 1),
-                "(1, 2) (Unigrams + Bigrams)": (1, 2),
-                "(1, 3) (Unigrams + Bigrams + Trigrams)": (1, 3)
-            }
+            with col_tr2:
+                logistic_c = st.number_input("Logistic Regression Regularization strength (C):", min_value=0.01, max_value=20.0, value=1.0, step=0.1)
+                ngram_sel = st.selectbox(
+                    "TF-IDF Vectorization Word N-Gram Range:",
+                    ["(1, 1) (Unigrams only)", "(1, 2) (Unigrams + Bigrams)", "(1, 3) (Unigrams + Bigrams + Trigrams)"],
+                    index=1
+                )
+                ngram_map = {
+                    "(1, 1) (Unigrams only)": (1, 1),
+                    "(1, 2) (Unigrams + Bigrams)": (1, 2),
+                    "(1, 3) (Unigrams + Bigrams + Trigrams)": (1, 3)
+                }
             
-        submit_train = st.form_submit_button("⚡ Re-train Classifier Pipeline", use_container_width=True)
+            submit_train = st.form_submit_button("⚡ Re-train Classifier Pipeline", use_container_width=True)
         
-        if submit_train:
-            with st.spinner("Executing pipeline: Loading dataset, cleaning text, and fitting models..."):
-                try:
-                    from data_loader import load_and_detect_data
-                    from preprocessing import optimize_categories
+            if submit_train:
+                with st.spinner("Executing pipeline: Loading dataset, cleaning text, and fitting models..."):
+                    try:
+                        from data_loader import load_and_detect_data
+                        from preprocessing import optimize_categories
                     
-                    df = load_and_detect_data()
-                    df = optimize_categories(df)
+                        df = load_and_detect_data()
+                        df = optimize_categories(df)
                     
-                    if len(df) > train_size:
-                        df = df.sample(train_size, random_state=42)
+                        if len(df) > train_size:
+                            df = df.sample(train_size, random_state=42)
                         
-                    # Trigger training
-                    metrics = clf.train(
-                        df=df, 
-                        test_size=split_ratio, 
-                        max_features=max_feats, 
-                        ngram_range=ngram_map[ngram_sel], 
-                        logistic_C=logistic_c
-                    )
-                    clf.save()
+                        # Trigger training
+                        metrics = clf.train(
+                            df=df, 
+                            test_size=split_ratio, 
+                            max_features=max_feats, 
+                            ngram_range=ngram_map[ngram_sel], 
+                            logistic_C=logistic_c
+                        )
+                        clf.save()
                     
-                    st.cache_resource.clear()
-                    st.success("🎉 Models trained successfully and saved to disk! Refreshed charts.")
-                    st.rerun()
-                except Exception as e:
-                    st.error(f"Error during interactive training pipeline: {e}")
-    st.markdown("</div>", unsafe_allow_html=True)
+                        st.cache_resource.clear()
+                        st.success("🎉 Models trained successfully and saved to disk! Refreshed charts.")
+                        st.rerun()
+                    except Exception as e:
+                        st.error(f"Error during interactive training pipeline: {e}")
+        st.markdown("</div>", unsafe_allow_html=True)
 
 
 # --- 5. Admin Ticket Queue ---
-elif app_mode == "📥 Admin Ticket Queue":
-    st.markdown("### 📥 Live Support Ticket Queue & Agent Dispatcher")
-    st.markdown("Review submitted voice transcripts, adjust priorities, resolve tickets, and trigger automated Text-to-Speech replies.")
+with tabs[4]:
+        st.markdown("### 📥 Live Support Ticket Queue & Agent Dispatcher")
+        st.markdown("Review submitted voice transcripts, adjust priorities, resolve tickets, and trigger automated Text-to-Speech replies.")
     
-    tickets = get_all_tickets()
+        tickets = get_all_tickets()
     
-    if not tickets:
-        st.info("🎟️ No active tickets in the queue. Go to **AI Ticket Analyzer** or **Voice Call Agent** to submit some customer complaints!")
-    else:
-        # Render Analytics Metrics Cards
-        tot = len(tickets)
-        high = len([t for t in tickets if t['priority'] == 'High'])
-        open_t = len([t for t in tickets if t['status'] in ['New', 'In Progress']])
-        res_t = len([t for t in tickets if t['status'] == 'Resolved'])
+        if not tickets:
+            st.info("🎟️ No active tickets in the queue. Go to **AI Ticket Analyzer** or **Voice Call Agent** to submit some customer complaints!")
+        else:
+            # Render Analytics Metrics Cards
+            tot = len(tickets)
+            high = len([t for t in tickets if t['priority'] == 'High'])
+            open_t = len([t for t in tickets if t['status'] in ['New', 'In Progress']])
+            res_t = len([t for t in tickets if t['status'] == 'Resolved'])
         
-        col_t1, col_t2, col_t3, col_t4 = st.columns(4)
-        with col_t1:
-            st.markdown(f"""
-            <div style="background: linear-gradient(135deg, rgba(108, 99, 255, 0.15), rgba(22, 28, 45, 0.6)); border: 1px solid rgba(108, 99, 255, 0.25); border-radius: 16px; padding: 22px; text-align: center; box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3); backdrop-filter: blur(8px);">
-                <span style="font-size: 2.6rem; font-weight: 700; color: #a29bfe; display: block; margin-bottom: 5px;">{tot}</span>
-                <span style="font-size: 0.85rem; color: #cbd5e1; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;">Total Tickets</span>
-            </div>
-            """, unsafe_allow_html=True)
-        with col_t2:
-            st.markdown(f"""
-            <div style="background: linear-gradient(135deg, rgba(255, 75, 75, 0.15), rgba(22, 28, 45, 0.6)); border: 1px solid rgba(255, 75, 75, 0.25); border-radius: 16px; padding: 22px; text-align: center; box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3); backdrop-filter: blur(8px);">
-                <span style="font-size: 2.6rem; font-weight: 700; color: #ff6b6b; display: block; margin-bottom: 5px;">{high}</span>
-                <span style="font-size: 0.85rem; color: #cbd5e1; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;">🚨 High Priority</span>
-            </div>
-            """, unsafe_allow_html=True)
-        with col_t3:
-            st.markdown(f"""
-            <div style="background: linear-gradient(135deg, rgba(255, 171, 0, 0.15), rgba(22, 28, 45, 0.6)); border: 1px solid rgba(255, 171, 0, 0.25); border-radius: 16px; padding: 22px; text-align: center; box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3); backdrop-filter: blur(8px);">
-                <span style="font-size: 2.6rem; font-weight: 700; color: #ffbf00; display: block; margin-bottom: 5px;">{open_t}</span>
-                <span style="font-size: 0.85rem; color: #cbd5e1; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;">📁 Open Tickets</span>
-            </div>
-            """, unsafe_allow_html=True)
-        with col_t4:
-            st.markdown(f"""
-            <div style="background: linear-gradient(135deg, rgba(0, 200, 83, 0.15), rgba(22, 28, 45, 0.6)); border: 1px solid rgba(0, 200, 83, 0.25); border-radius: 16px; padding: 22px; text-align: center; box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3); backdrop-filter: blur(8px);">
-                <span style="font-size: 2.6rem; font-weight: 700; color: #00e676; display: block; margin-bottom: 5px;">{res_t}</span>
-                <span style="font-size: 0.85rem; color: #cbd5e1; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;">✅ Resolved</span>
-            </div>
-            """, unsafe_allow_html=True)
-            
-        # Display Tickets Table
-        st.markdown("<div class='glass-card'>", unsafe_allow_html=True)
-        st.subheader("📋 Active Support Queue Records")
-        
-        df_disp = pd.DataFrame(tickets)
-        # Add a display language column
-        lang_flags = {
-            'en': '🇺🇸 EN',
-            'kn': '🇮🇳 KN',
-            'hi': '🇮🇳 HI'
-        }
-        df_disp['Language'] = df_disp['language'].map(lambda l: lang_flags.get(l, str(l).upper()))
-        
-        df_disp = df_disp[[
-            'id', 'timestamp', 'Language', 'priority', 'status', 'actual_category', 
-            'sentiment', 'transcript', 'model_used'
-        ]]
-        df_disp.rename(columns={
-            'id': 'ID',
-            'timestamp': 'Timestamp',
-            'priority': 'Priority',
-            'status': 'Status',
-            'actual_category': 'Category/Department',
-            'sentiment': 'Sentiment',
-            'transcript': 'Transcript',
-            'model_used': 'Model Used'
-        }, inplace=True)
-        
-        st.dataframe(df_disp, use_container_width=True, hide_index=True)
-        st.markdown("</div>", unsafe_allow_html=True)
-        
-        # Edit / Manage Panel
-        st.markdown("<div class='glass-card'>", unsafe_allow_html=True)
-        st.subheader("🛠️ Ticket Management Console")
-        
-        ticket_options = [f"Ticket #{t['id']} - [{t['priority']}] {t['actual_category']} ({t['status']})" for t in tickets]
-        selected_ticket_str = st.selectbox("Choose a ticket to inspect or resolve:", ticket_options)
-        
-        if selected_ticket_str:
-            selected_ticket_id = int(selected_ticket_str.split("Ticket #")[1].split(" - ")[0])
-            t_detail = next(t for t in tickets if t['id'] == selected_ticket_id)
-            
-            det_col1, det_col2 = st.columns([1.5, 1])
-            
-            with det_col1:
-                lang_flags = {
-                    'en': '🇺🇸 EN',
-                    'kn': '🇮🇳 KN',
-                    'hi': '🇮🇳 HI'
-                }
-                lang_display = lang_flags.get(t_detail['language'], str(t_detail['language']).upper())
-                transcript_details = f"""
-                <div style="background: rgba(0,0,0,0.25); padding: 20px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.06);">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                        <span style="color: #94a3b8; font-size: 0.85rem;">SUBMITTED TIMESTAMP: {t_detail['timestamp']}</span>
-                        <span class="badge" style="background-color: rgba(255, 255, 255, 0.08); color: #cbd5e1; border: 1px solid rgba(255, 255, 255, 0.15); font-size: 0.8rem; padding: 3px 8px;">{lang_display}</span>
-                    </div>
-                    <h5 style="margin-top: 0px; color: #f8f9fa; font-size: 1.1rem; font-weight: 600;">🗣️ Captured Transcript</h5>
-                    <p style="font-size: 1.15rem; color: #cbd5e1; font-style: italic; line-height: 1.6; border-left: 2px solid #6C63FF; padding-left: 15px; margin-top: 10px;">
-                        "{t_detail['transcript']}"
-                    </p>
-                """
-                if t_detail['language'] in ['kn', 'hi'] and t_detail['translation']:
-                    transcript_details += f"""
-                    <hr style="border-color: rgba(255,255,255,0.06); margin: 15px 0;">
-                    <h5 style="margin-top: 0px; color: #cbd5e1; font-size: 1.0rem; font-weight: 600;">📝 English Translation</h5>
-                    <p style="font-size: 1.1rem; color: #a0aec0; font-style: italic; line-height: 1.6; border-left: 2px solid #FF6584; padding-left: 15px; margin-top: 10px;">
-                        "{t_detail['translation']}"
-                    </p>
-                    """
-                transcript_details += f"""
-                    <hr style="border-color: rgba(255,255,255,0.06); margin: 15px 0;">
-                    <div style="margin-top: 15px;">
-                        <span style="color: #94a3b8; font-size: 0.85rem;">Classification: </span>
-                        <span class="badge badge-Category">{t_detail['predicted_category']}</span>
-                        <span style="color: #94a3b8; font-size: 0.85rem; margin-left: 15px;">Model: </span>
-                        <span style="color: #FF6584; font-weight: 600; font-size: 0.9rem;">{t_detail['model_used'].upper()}</span>
-                        <span style="color: #94a3b8; font-size: 0.85rem; margin-left: 15px;">Sentiment: </span>
-                        <span class="badge badge-{t_detail['sentiment']}">{t_detail['sentiment']}</span>
-                    </div>
+            col_t1, col_t2, col_t3, col_t4 = st.columns(4)
+            with col_t1:
+                st.markdown(f"""
+                <div style="background: linear-gradient(135deg, rgba(108, 99, 255, 0.15), rgba(22, 28, 45, 0.6)); border: 1px solid rgba(108, 99, 255, 0.25); border-radius: 16px; padding: 22px; text-align: center; box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3); backdrop-filter: blur(8px);">
+                    <span style="font-size: 2.6rem; font-weight: 700; color: #a29bfe; display: block; margin-bottom: 5px;">{tot}</span>
+                    <span style="font-size: 0.85rem; color: #cbd5e1; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;">Total Tickets</span>
                 </div>
-                """
-                st.markdown(transcript_details, unsafe_allow_html=True)
-                
-            with det_col2:
-                # Update ticket properties form
-                st.write("**Modify Ticket Attributes & Dispatch Resolution**")
-                
-                dept_opts = ["Account Access", "Billing Issue", "General Inquiry", "Refund Request", "Technical Issue"]
-                cur_dept_idx = dept_opts.index(t_detail['actual_category']) if t_detail['actual_category'] in dept_opts else 2
-                
-                new_dept = st.selectbox("Override Department Route:", dept_opts, index=cur_dept_idx)
-                
-                prio_opts = ["High", "Medium", "Low"]
-                cur_prio_idx = prio_opts.index(t_detail['priority']) if t_detail['priority'] in prio_opts else 1
-                new_priority = st.selectbox("Override Priority Level:", prio_opts, index=cur_prio_idx)
-                
-                status_opts = ["New", "In Progress", "Resolved"]
-                cur_status_idx = status_opts.index(t_detail['status']) if t_detail['status'] in status_opts else 0
-                new_status = st.selectbox("Set Ticket Status:", status_opts, index=cur_status_idx)
-                
-                res_note = st.text_area("✍️ Resolution Notes (Optional):", value=t_detail['resolution_note'], placeholder="Type ticket agent resolution comments here...")
-                
-                col_btn1, col_btn2, col_btn3 = st.columns(3)
-                
-                with col_btn1:
-                    save_btn = st.button("💾 Save Updates", use_container_width=True, type="primary")
-                    if save_btn:
-                        update_ticket(selected_ticket_id, new_dept, new_priority, new_status, res_note)
-                        st.success(f"Ticket #{selected_ticket_id} updated successfully!")
-                        st.rerun()
-                        
-                with col_btn2:
-                    tts_btn = st.button("🗣️ Speak Resolution", use_container_width=True)
-                    if tts_btn:
-                        ticket_lang = t_detail['language']
-                        # Construct a helpful audio script in English first
-                        if res_note.strip():
-                            tts_text_en = f"This is an automated notification from Support Desk regarding ticket number {selected_ticket_id}. Status has been set to {new_status}. Agent resolution note: {res_note}"
-                        else:
-                            tts_text_en = f"This is an automated notification from Support Desk regarding ticket number {selected_ticket_id}. Your ticket is routed to {new_dept} and is currently {new_status}."
-                        
-                        # Translate to native language if needed
-                        if ticket_lang in ['kn', 'hi']:
-                            tts_text = translate_text(tts_text_en, source_lang='en', target_lang=ticket_lang)
-                        else:
-                            tts_text = tts_text_en
-                            
-                        with st.spinner(f"Synthesizing speech reply ({ticket_lang.upper()})..."):
-                            audio_file = synthesize_speech(tts_text, lang=ticket_lang)
-                            st.audio(audio_file, format="audio/mp3", autoplay=True)
-                            
-                with col_btn3:
-                    del_btn = st.button("🗑️ Dismiss Ticket", use_container_width=True)
-                    if del_btn:
-                        delete_ticket(selected_ticket_id)
-                        st.success(f"Ticket #{selected_ticket_id} deleted successfully!")
-                        st.rerun()
-                        
-        st.markdown("</div>", unsafe_allow_html=True)
+                """, unsafe_allow_html=True)
+            with col_t2:
+                st.markdown(f"""
+                <div style="background: linear-gradient(135deg, rgba(255, 75, 75, 0.15), rgba(22, 28, 45, 0.6)); border: 1px solid rgba(255, 75, 75, 0.25); border-radius: 16px; padding: 22px; text-align: center; box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3); backdrop-filter: blur(8px);">
+                    <span style="font-size: 2.6rem; font-weight: 700; color: #ff6b6b; display: block; margin-bottom: 5px;">{high}</span>
+                    <span style="font-size: 0.85rem; color: #cbd5e1; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;">🚨 High Priority</span>
+                </div>
+                """, unsafe_allow_html=True)
+            with col_t3:
+                st.markdown(f"""
+                <div style="background: linear-gradient(135deg, rgba(255, 171, 0, 0.15), rgba(22, 28, 45, 0.6)); border: 1px solid rgba(255, 171, 0, 0.25); border-radius: 16px; padding: 22px; text-align: center; box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3); backdrop-filter: blur(8px);">
+                    <span style="font-size: 2.6rem; font-weight: 700; color: #ffbf00; display: block; margin-bottom: 5px;">{open_t}</span>
+                    <span style="font-size: 0.85rem; color: #cbd5e1; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;">📁 Open Tickets</span>
+                </div>
+                """, unsafe_allow_html=True)
+            with col_t4:
+                st.markdown(f"""
+                <div style="background: linear-gradient(135deg, rgba(0, 200, 83, 0.15), rgba(22, 28, 45, 0.6)); border: 1px solid rgba(0, 200, 83, 0.25); border-radius: 16px; padding: 22px; text-align: center; box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3); backdrop-filter: blur(8px);">
+                    <span style="font-size: 2.6rem; font-weight: 700; color: #00e676; display: block; margin-bottom: 5px;">{res_t}</span>
+                    <span style="font-size: 0.85rem; color: #cbd5e1; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;">✅ Resolved</span>
+                </div>
+                """, unsafe_allow_html=True)
+            
+            # Display Tickets Table
+            st.markdown("<div class='glass-card'>", unsafe_allow_html=True)
+            st.subheader("📋 Active Support Queue Records")
         
-        # Clear database expander
-        with st.expander("⚠️ Danger Zone: Clear Ticket Queue Records", expanded=False):
-            st.warning("Warning: This action will permanently erase all tickets from the database.")
-            clear_btn = st.button("Clear All Queue Records", type="secondary")
-            if clear_btn:
-                clear_all_tickets()
-                st.success("All queue records deleted successfully!")
-                st.rerun()
+            df_disp = pd.DataFrame(tickets)
+            # Add a display language column
+            lang_flags = {
+                'en': '🇺🇸 EN',
+                'kn': '🇮🇳 KN',
+                'hi': '🇮🇳 HI'
+            }
+            df_disp['Language'] = df_disp['language'].map(lambda l: lang_flags.get(l, str(l).upper()))
+        
+            df_disp = df_disp[[
+                'id', 'timestamp', 'Language', 'priority', 'status', 'actual_category', 
+                'sentiment', 'transcript', 'model_used'
+            ]]
+            df_disp.rename(columns={
+                'id': 'ID',
+                'timestamp': 'Timestamp',
+                'priority': 'Priority',
+                'status': 'Status',
+                'actual_category': 'Category/Department',
+                'sentiment': 'Sentiment',
+                'transcript': 'Transcript',
+                'model_used': 'Model Used'
+            }, inplace=True)
+        
+            st.dataframe(df_disp, use_container_width=True, hide_index=True)
+            st.markdown("</div>", unsafe_allow_html=True)
+        
+            # Edit / Manage Panel
+            st.markdown("<div class='glass-card'>", unsafe_allow_html=True)
+            st.subheader("🛠️ Ticket Management Console")
+        
+            ticket_options = [f"Ticket #{t['id']} - [{t['priority']}] {t['actual_category']} ({t['status']})" for t in tickets]
+            selected_ticket_str = st.selectbox("Choose a ticket to inspect or resolve:", ticket_options)
+        
+            if selected_ticket_str:
+                selected_ticket_id = int(selected_ticket_str.split("Ticket #")[1].split(" - ")[0])
+                t_detail = next(t for t in tickets if t['id'] == selected_ticket_id)
+            
+                det_col1, det_col2 = st.columns([1.5, 1])
+            
+                with det_col1:
+                    lang_flags = {
+                        'en': '🇺🇸 EN',
+                        'kn': '🇮🇳 KN',
+                        'hi': '🇮🇳 HI'
+                    }
+                    lang_display = lang_flags.get(t_detail['language'], str(t_detail['language']).upper())
+                    transcript_details = f"""
+                    <div style="background: rgba(0,0,0,0.25); padding: 20px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.06);">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                            <span style="color: #94a3b8; font-size: 0.85rem;">SUBMITTED TIMESTAMP: {t_detail['timestamp']}</span>
+                            <span class="badge" style="background-color: rgba(255, 255, 255, 0.08); color: #cbd5e1; border: 1px solid rgba(255, 255, 255, 0.15); font-size: 0.8rem; padding: 3px 8px;">{lang_display}</span>
+                        </div>
+                        <h5 style="margin-top: 0px; color: #f8f9fa; font-size: 1.1rem; font-weight: 600;">🗣️ Captured Transcript</h5>
+                        <p style="font-size: 1.15rem; color: #cbd5e1; font-style: italic; line-height: 1.6; border-left: 2px solid #6C63FF; padding-left: 15px; margin-top: 10px;">
+                            "{t_detail['transcript']}"
+                        </p>
+                    """
+                    if t_detail['language'] in ['kn', 'hi'] and t_detail['translation']:
+                        transcript_details += f"""
+                        <hr style="border-color: rgba(255,255,255,0.06); margin: 15px 0;">
+                        <h5 style="margin-top: 0px; color: #cbd5e1; font-size: 1.0rem; font-weight: 600;">📝 English Translation</h5>
+                        <p style="font-size: 1.1rem; color: #a0aec0; font-style: italic; line-height: 1.6; border-left: 2px solid #FF6584; padding-left: 15px; margin-top: 10px;">
+                            "{t_detail['translation']}"
+                        </p>
+                        """
+                    transcript_details += f"""
+                        <hr style="border-color: rgba(255,255,255,0.06); margin: 15px 0;">
+                        <div style="margin-top: 15px;">
+                            <span style="color: #94a3b8; font-size: 0.85rem;">Classification: </span>
+                            <span class="badge badge-Category">{t_detail['predicted_category']}</span>
+                            <span style="color: #94a3b8; font-size: 0.85rem; margin-left: 15px;">Model: </span>
+                            <span style="color: #FF6584; font-weight: 600; font-size: 0.9rem;">{t_detail['model_used'].upper()}</span>
+                            <span style="color: #94a3b8; font-size: 0.85rem; margin-left: 15px;">Sentiment: </span>
+                            <span class="badge badge-{t_detail['sentiment']}">{t_detail['sentiment']}</span>
+                        </div>
+                    </div>
+                    """
+                    st.markdown(transcript_details, unsafe_allow_html=True)
+                
+                with det_col2:
+                    # Update ticket properties form
+                    st.write("**Modify Ticket Attributes & Dispatch Resolution**")
+                
+                    dept_opts = ["Account Access", "Billing Issue", "General Inquiry", "Refund Request", "Technical Issue"]
+                    cur_dept_idx = dept_opts.index(t_detail['actual_category']) if t_detail['actual_category'] in dept_opts else 2
+                
+                    new_dept = st.selectbox("Override Department Route:", dept_opts, index=cur_dept_idx)
+                
+                    prio_opts = ["High", "Medium", "Low"]
+                    cur_prio_idx = prio_opts.index(t_detail['priority']) if t_detail['priority'] in prio_opts else 1
+                    new_priority = st.selectbox("Override Priority Level:", prio_opts, index=cur_prio_idx)
+                
+                    status_opts = ["New", "In Progress", "Resolved"]
+                    cur_status_idx = status_opts.index(t_detail['status']) if t_detail['status'] in status_opts else 0
+                    new_status = st.selectbox("Set Ticket Status:", status_opts, index=cur_status_idx)
+                
+                    res_note = st.text_area("✍️ Resolution Notes (Optional):", value=t_detail['resolution_note'], placeholder="Type ticket agent resolution comments here...")
+                
+                    col_btn1, col_btn2, col_btn3 = st.columns(3)
+                
+                    with col_btn1:
+                        save_btn = st.button("💾 Save Updates", use_container_width=True, type="primary")
+                        if save_btn:
+                            update_ticket(selected_ticket_id, new_dept, new_priority, new_status, res_note)
+                            st.success(f"Ticket #{selected_ticket_id} updated successfully!")
+                            st.rerun()
+                        
+                    with col_btn2:
+                        tts_btn = st.button("🗣️ Speak Resolution", use_container_width=True)
+                        if tts_btn:
+                            ticket_lang = t_detail['language']
+                            # Construct a helpful audio script in English first
+                            if res_note.strip():
+                                tts_text_en = f"This is an automated notification from Support Desk regarding ticket number {selected_ticket_id}. Status has been set to {new_status}. Agent resolution note: {res_note}"
+                            else:
+                                tts_text_en = f"This is an automated notification from Support Desk regarding ticket number {selected_ticket_id}. Your ticket is routed to {new_dept} and is currently {new_status}."
+                        
+                            # Translate to native language if needed
+                            if ticket_lang in ['kn', 'hi']:
+                                tts_text = translate_text(tts_text_en, source_lang='en', target_lang=ticket_lang)
+                            else:
+                                tts_text = tts_text_en
+                            
+                            with st.spinner(f"Synthesizing speech reply ({ticket_lang.upper()})..."):
+                                audio_file = synthesize_speech(tts_text, lang=ticket_lang)
+                                st.audio(audio_file, format="audio/mp3", autoplay=True)
+                            
+                    with col_btn3:
+                        del_btn = st.button("🗑️ Dismiss Ticket", use_container_width=True)
+                        if del_btn:
+                            delete_ticket(selected_ticket_id)
+                            st.success(f"Ticket #{selected_ticket_id} deleted successfully!")
+                            st.rerun()
+                        
+            st.markdown("</div>", unsafe_allow_html=True)
+        
+            # Clear database expander
+            with st.expander("⚠️ Danger Zone: Clear Ticket Queue Records", expanded=False):
+                st.warning("Warning: This action will permanently erase all tickets from the database.")
+                clear_btn = st.button("Clear All Queue Records", type="secondary")
+                if clear_btn:
+                    clear_all_tickets()
+                    st.success("All queue records deleted successfully!")
+                    st.rerun()
