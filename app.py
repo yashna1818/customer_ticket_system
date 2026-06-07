@@ -235,10 +235,11 @@ with st.sidebar.expander("🔑 Cloud Whisper API (Fast)", expanded=False):
     )
 
 # Common Rendering Card for Analysis
-def render_analysis_card(transcribed_text, active_model='logistic', ticket_id=None):
-    all_preds = clf.predict_all(transcribed_text)
+def render_analysis_card(transcribed_text, active_model='logistic', ticket_id=None, translation="", lang="en"):
+    text_to_analyze = translation if translation and lang in ['kn', 'hi'] else transcribed_text
+    all_preds = clf.predict_all(text_to_analyze)
     category = all_preds[active_model]
-    sentiment, priority = get_sentiment_and_priority(transcribed_text)
+    sentiment, priority = get_sentiment_and_priority(text_to_analyze, category=category)
     
     dept_mapping = {
         "Billing Issue": "Finance & Billing",
@@ -251,36 +252,45 @@ def render_analysis_card(transcribed_text, active_model='logistic', ticket_id=No
     
     res_col1, res_col2 = st.columns([1.5, 1])
     with res_col1:
-        st.markdown(f"""
+        transcript_html = f"""
         <div class="glass-card">
             <h4 style="margin-top:0px; color: #f8f9fa;">
-                🗣️ Official Call Transcript {f' (Ticket #{ticket_id})' if ticket_id else ''}
+                🗣️ {T("Official Call Transcript")} {f' (Ticket #{ticket_id})' if ticket_id else ''}
             </h4>
             <p style="font-size: 1.2rem; color: #e2e8f0; line-height: 1.6; font-style:italic; border-left: 3px solid #6C63FF; padding-left: 15px; margin-top: 15px;">
                 "{transcribed_text}"
             </p>
-        </div>
-        """, unsafe_allow_html=True)
+        """
+        if translation and lang in ['kn', 'hi']:
+            transcript_html += f"""
+            <hr style="border-color: rgba(255,255,255,0.06); margin: 15px 0;">
+            <h5 style="margin-top: 0px; color: #cbd5e1; font-weight: 500;">📝 {T("English Translation")}</h5>
+            <p style="font-size: 1.1rem; color: #a0aec0; line-height: 1.6; font-style:italic; border-left: 3px solid #FF6584; padding-left: 15px; margin-top: 10px;">
+                "{translation}"
+            </p>
+            """
+        transcript_html += "</div>"
+        st.markdown(transcript_html, unsafe_allow_html=True)
         
         st.markdown(f"""
         <div class="glass-card">
-            <h4 style="margin-top:0px; color: #f8f9fa;">⚖️ Model Prediction Consensus</h4>
+            <h4 style="margin-top:0px; color: #f8f9fa;">⚖️ {T("Model Consensus")}</h4>
             <table style="width:100%; border-collapse: collapse; margin-top: 15px; color: #cbd5e1;">
                 <tr style="border-bottom: 2px solid rgba(255,255,255,0.08); font-weight: 600;">
-                    <th style="text-align: left; padding: 10px 8px; color: #94a3b8; font-size: 0.95rem; text-transform: uppercase;">Model</th>
-                    <th style="text-align: left; padding: 10px 8px; color: #94a3b8; font-size: 0.95rem; text-transform: uppercase;">Prediction</th>
+                    <th style="text-align: left; padding: 10px 8px; color: #94a3b8; font-size: 0.95rem; text-transform: uppercase;">{T("Model")}</th>
+                    <th style="text-align: left; padding: 10px 8px; color: #94a3b8; font-size: 0.95rem; text-transform: uppercase;">{T("Prediction")}</th>
                 </tr>
                 <tr style="border-bottom: 1px solid rgba(255,255,255,0.04);">
                     <td style="padding: 12px 8px;">Logistic Regression</td>
-                    <td style="padding: 12px 8px;"><span class="badge badge-Category">{all_preds['logistic']}</span></td>
+                    <td style="padding: 12px 8px;"><span class="badge badge-Category">{T(all_preds['logistic'])}</span></td>
                 </tr>
                 <tr style="border-bottom: 1px solid rgba(255,255,255,0.04);">
                     <td style="padding: 12px 8px;">Naive Bayes</td>
-                    <td style="padding: 12px 8px;"><span class="badge badge-Category">{all_preds['naive_bayes']}</span></td>
+                    <td style="padding: 12px 8px;"><span class="badge badge-Category">{T(all_preds['naive_bayes'])}</span></td>
                 </tr>
                 <tr>
                     <td style="padding: 12px 8px;">Support Vector Machine (SVC)</td>
-                    <td style="padding: 12px 8px;"><span class="badge badge-Category">{all_preds['svc']}</span></td>
+                    <td style="padding: 12px 8px;"><span class="badge badge-Category">{T(all_preds['svc'])}</span></td>
                 </tr>
             </table>
         </div>
@@ -289,29 +299,30 @@ def render_analysis_card(transcribed_text, active_model='logistic', ticket_id=No
     with res_col2:
         st.markdown(f"""
         <div class="glass-card" style="background: linear-gradient(135deg, rgba(22, 28, 45, 0.7), rgba(108, 99, 255, 0.05));">
-            <h4 style="margin-top:0px; color: #f8f9fa;">🎛️ AI Routing Analysis ({active_model.upper()})</h4>
+            <h4 style="margin-top:0px; color: #f8f9fa;">🎛️ {T("AI Routing Analysis")} ({active_model.upper()})</h4>
             <br>
             <div style="border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 12px;">
-                <span style="color: #94a3b8; font-size: 0.9rem;">Routed Department</span><br>
-                <span class="badge" style="background-color:rgba(255,101,132,0.2); color:#FF6584; border:1px solid #FF6584; margin-top: 5px;">{routed_dept}</span>
+                <span style="color: #94a3b8; font-size: 0.9rem;">{T("Routed Department")}</span><br>
+                <span class="badge" style="background-color:rgba(255,101,132,0.2); color:#FF6584; border:1px solid #FF6584; margin-top: 5px;">{T(routed_dept)}</span>
             </div>
             <br>
             <div style="border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 12px;">
-                <span style="color: #94a3b8; font-size: 0.9rem;">AI Classification</span><br>
-                <span class="badge badge-Category" style="margin-top: 5px;">{category}</span>
+                <span style="color: #94a3b8; font-size: 0.9rem;">{T("AI Classification")}</span><br>
+                <span class="badge badge-Category" style="margin-top: 5px;">{T(category)}</span>
             </div>
             <br>
             <div style="border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 12px;">
-                <span style="color: #94a3b8; font-size: 0.9rem;">Customer Tone</span><br>
-                <span class="badge badge-{sentiment}" style="margin-top: 5px;">{sentiment}</span>
+                <span style="color: #94a3b8; font-size: 0.9rem;">{T("Customer Tone")}</span><br>
+                <span class="badge badge-{sentiment}" style="margin-top: 5px;">{T(sentiment)}</span>
             </div>
             <br>
             <div>
-                <span style="color: #94a3b8; font-size: 0.9rem;">Urgency Level</span><br>
-                <span class="badge badge-{priority}" style="margin-top: 5px;">{priority} priority</span>
+                <span style="color: #94a3b8; font-size: 0.9rem;">{T("Urgency Level")}</span><br>
+                <span class="badge badge-{priority}" style="margin-top: 5px;">{T(priority)} {T("priority")}</span>
             </div>
         </div>
         """, unsafe_allow_html=True)
+
 
 
 # --- 1. Departments Overview ---
@@ -392,7 +403,7 @@ elif app_mode == "🎙️ AI Ticket Analyzer":
         else:
             with st.spinner("🤖 Whisper is transcribing & ML is analyzing..."):
                 if audio_path:
-                    transcribed_text = transcribe_audio(audio_path, model_name=whisper_model_size, api_key=openai_api_key)
+                    transcribed_text = transcribe_audio(audio_path, model_name=whisper_model_size, api_key=openai_api_key, language=target_lang)
                     try:
                         os.remove(audio_path)
                     except Exception:
@@ -401,10 +412,17 @@ elif app_mode == "🎙️ AI Ticket Analyzer":
                     transcribed_text = text_input
 
                 if transcribed_text.strip():
-                    # Calculate ML classification
-                    all_preds = clf.predict_all(transcribed_text)
+                    # Language detection & translation
+                    detected_lang = detect_language(transcribed_text)
+                    if detected_lang in ['kn', 'hi']:
+                        transcribed_text_en = translate_text(transcribed_text, source_lang=detected_lang, target_lang='en')
+                    else:
+                        transcribed_text_en = transcribed_text
+
+                    # Calculate ML classification on the English translation
+                    all_preds = clf.predict_all(transcribed_text_en)
                     category = all_preds[active_model]
-                    sentiment, priority = get_sentiment_and_priority(transcribed_text)
+                    sentiment, priority = get_sentiment_and_priority(transcribed_text_en, category=category)
                     
                     # Save to DB
                     ticket_id = add_ticket(
@@ -412,13 +430,16 @@ elif app_mode == "🎙️ AI Ticket Analyzer":
                         category=category,
                         sentiment=sentiment,
                         priority=priority,
-                        model_used=active_model
+                        model_used=active_model,
+                        language=detected_lang,
+                        translation=transcribed_text_en if detected_lang in ['kn', 'hi'] else ""
                     )
                     
                     st.success(f"🎟️ Ticket #{ticket_id} created and queued successfully!")
-                    render_analysis_card(transcribed_text, active_model, ticket_id=ticket_id)
+                    render_analysis_card(transcribed_text, active_model, ticket_id=ticket_id, translation=transcribed_text_en, lang=detected_lang)
                 else:
                     st.error("Input was empty or unintelligible.")
+
 
 
 # --- 3. Voice Call Agent ---
@@ -478,7 +499,7 @@ elif app_mode == "📞 Voice Call Agent":
                         f.write(audio_bytes)
                         audio_path = f.name
                         
-                    user_text = transcribe_audio(audio_path, model_name=whisper_model_size, api_key=openai_api_key)
+                    user_text = transcribe_audio(audio_path, model_name=whisper_model_size, api_key=openai_api_key, language=target_lang)
                     os.remove(audio_path)
                     
                     st.session_state.messages.append({"role": "user", "content": user_text})
@@ -552,7 +573,7 @@ elif app_mode == "📞 Voice Call Agent":
         # Calculate ML classification
         all_preds = clf.predict_all(full_transcript_en)
         category = all_preds[active_model]
-        sentiment, priority = get_sentiment_and_priority(full_transcript_en)
+        sentiment, priority = get_sentiment_and_priority(full_transcript_en, category=category)
         
         # Save to DB
         ticket_id = add_ticket(
@@ -565,8 +586,7 @@ elif app_mode == "📞 Voice Call Agent":
             translation=full_transcript_en if detected_lang in ['kn', 'hi'] else ""
         )
         
-        st.success(f"🎟️ Ticket #{ticket_id} created and queued successfully!")
-        render_analysis_card(full_transcript, active_model, ticket_id=ticket_id)
+        render_analysis_card(full_transcript, active_model, ticket_id=ticket_id, translation=full_transcript_en, lang=detected_lang)
         
         if st.button("🔄 Initiate New Call"):
             if "messages" in st.session_state:
@@ -795,9 +815,17 @@ elif app_mode == "📥 Admin Ticket Queue":
         st.subheader("📋 Active Support Queue Records")
         
         df_disp = pd.DataFrame(tickets)
+        # Add a display language column
+        lang_flags = {
+            'en': '🇺🇸 EN',
+            'kn': '🇮🇳 KN',
+            'hi': '🇮🇳 HI'
+        }
+        df_disp['Language'] = df_disp['language'].map(lambda l: lang_flags.get(l, str(l).upper()))
+        
         df_disp = df_disp[[
-            'id', 'timestamp', 'priority', 'status', 'actual_category', 
-            'sentiment', 'transcript', 'model_used', 'predicted_category'
+            'id', 'timestamp', 'Language', 'priority', 'status', 'actual_category', 
+            'sentiment', 'transcript', 'model_used'
         ]]
         df_disp.rename(columns={
             'id': 'ID',
@@ -807,8 +835,7 @@ elif app_mode == "📥 Admin Ticket Queue":
             'actual_category': 'Category/Department',
             'sentiment': 'Sentiment',
             'transcript': 'Transcript',
-            'model_used': 'Model Used',
-            'predicted_category': 'Original Prediction'
+            'model_used': 'Model Used'
         }, inplace=True)
         
         st.dataframe(df_disp, use_container_width=True, hide_index=True)
@@ -828,14 +855,33 @@ elif app_mode == "📥 Admin Ticket Queue":
             det_col1, det_col2 = st.columns([1.5, 1])
             
             with det_col1:
-                st.markdown(f"""
+                lang_flags = {
+                    'en': '🇺🇸 EN',
+                    'kn': '🇮🇳 KN',
+                    'hi': '🇮🇳 HI'
+                }
+                lang_display = lang_flags.get(t_detail['language'], str(t_detail['language']).upper())
+                transcript_details = f"""
                 <div style="background: rgba(0,0,0,0.25); padding: 20px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.06);">
-                    <p style="color: #94a3b8; font-size: 0.85rem; margin-bottom: 5px;">SUBMITTED TIMESTAMP: {t_detail['timestamp']}</p>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                        <span style="color: #94a3b8; font-size: 0.85rem;">SUBMITTED TIMESTAMP: {t_detail['timestamp']}</span>
+                        <span class="badge" style="background-color: rgba(255, 255, 255, 0.08); color: #cbd5e1; border: 1px solid rgba(255, 255, 255, 0.15); font-size: 0.8rem; padding: 3px 8px;">{lang_display}</span>
+                    </div>
                     <h5 style="margin-top: 0px; color: #f8f9fa; font-size: 1.1rem; font-weight: 600;">🗣️ Captured Transcript</h5>
                     <p style="font-size: 1.15rem; color: #cbd5e1; font-style: italic; line-height: 1.6; border-left: 2px solid #6C63FF; padding-left: 15px; margin-top: 10px;">
                         "{t_detail['transcript']}"
                     </p>
-                    <hr style="border-color: rgba(255,255,255,0.06);">
+                """
+                if t_detail['language'] in ['kn', 'hi'] and t_detail['translation']:
+                    transcript_details += f"""
+                    <hr style="border-color: rgba(255,255,255,0.06); margin: 15px 0;">
+                    <h5 style="margin-top: 0px; color: #cbd5e1; font-size: 1.0rem; font-weight: 600;">📝 English Translation</h5>
+                    <p style="font-size: 1.1rem; color: #a0aec0; font-style: italic; line-height: 1.6; border-left: 2px solid #FF6584; padding-left: 15px; margin-top: 10px;">
+                        "{t_detail['translation']}"
+                    </p>
+                    """
+                transcript_details += f"""
+                    <hr style="border-color: rgba(255,255,255,0.06); margin: 15px 0;">
                     <div style="margin-top: 15px;">
                         <span style="color: #94a3b8; font-size: 0.85rem;">Classification: </span>
                         <span class="badge badge-Category">{t_detail['predicted_category']}</span>
@@ -845,7 +891,8 @@ elif app_mode == "📥 Admin Ticket Queue":
                         <span class="badge badge-{t_detail['sentiment']}">{t_detail['sentiment']}</span>
                     </div>
                 </div>
-                """, unsafe_allow_html=True)
+                """
+                st.markdown(transcript_details, unsafe_allow_html=True)
                 
             with det_col2:
                 # Update ticket properties form
@@ -878,14 +925,21 @@ elif app_mode == "📥 Admin Ticket Queue":
                 with col_btn2:
                     tts_btn = st.button("🗣️ Speak Resolution", use_container_width=True)
                     if tts_btn:
-                        # Construct a helpful audio script
+                        ticket_lang = t_detail['language']
+                        # Construct a helpful audio script in English first
                         if res_note.strip():
-                            tts_text = f"This is an automated notification from Support Desk regarding ticket number {selected_ticket_id}. Status has been set to {new_status}. Agent resolution note: {res_note}"
+                            tts_text_en = f"This is an automated notification from Support Desk regarding ticket number {selected_ticket_id}. Status has been set to {new_status}. Agent resolution note: {res_note}"
                         else:
-                            tts_text = f"This is an automated notification from Support Desk regarding ticket number {selected_ticket_id}. Your ticket is routed to {new_dept} and is currently {new_status}."
+                            tts_text_en = f"This is an automated notification from Support Desk regarding ticket number {selected_ticket_id}. Your ticket is routed to {new_dept} and is currently {new_status}."
                         
-                        with st.spinner("Synthesizing speech reply..."):
-                            audio_file = synthesize_speech(tts_text)
+                        # Translate to native language if needed
+                        if ticket_lang in ['kn', 'hi']:
+                            tts_text = translate_text(tts_text_en, source_lang='en', target_lang=ticket_lang)
+                        else:
+                            tts_text = tts_text_en
+                            
+                        with st.spinner(f"Synthesizing speech reply ({ticket_lang.upper()})..."):
+                            audio_file = synthesize_speech(tts_text, lang=ticket_lang)
                             st.audio(audio_file, format="audio/mp3", autoplay=True)
                             
                 with col_btn3:

@@ -57,10 +57,11 @@ def clean_text(text):
     
     return " ".join(cleaned_tokens)
 
-def get_sentiment_and_priority(text):
+def get_sentiment_and_priority(text, category=None):
     """
     Analyzes the sentiment of the given text using VADER and infers prioritization,
-    incorporating a keyword-boosted rule engine for urgent cases.
+    incorporating a keyword-boosted rule engine, department category mapping, 
+    and frustration phrase checks.
     """
     if not text or not isinstance(text, str):
         return "Neutral", "Medium"
@@ -77,17 +78,38 @@ def get_sentiment_and_priority(text):
     else:
         sentiment = "Neutral"
         
-    # Urgency keyword boost check
+    # 1. Urgency keyword boost check
     text_lower = text.lower()
     has_urgent_keyword = any(kw in text_lower for kw in URGENT_KEYWORDS)
     
-    if has_urgent_keyword:
+    # 2. Frustration detection
+    frustration_keywords = [
+        "frustrated", "disappointed", "terrible", "awful", "horrible", "annoyed", 
+        "useless", "worst", "waste of time", "fed up", "angry", "hate"
+    ]
+    has_frustration = any(kw in text_lower for kw in frustration_keywords)
+    
+    # 3. Category/Department severity boost
+    category_high_priority = False
+    category_medium_priority = False
+    if category:
+        category_clean = str(category).strip().lower()
+        if any(c in category_clean for c in ['account', 'access', 'security', 'auth']):
+            # Security and account lockouts are high severity
+            category_high_priority = True
+        elif any(c in category_clean for c in ['bill', 'payment', 'charge', 'finance']):
+            category_medium_priority = True
+            # Escalate negative billing issues to High
+            if compound < -0.1 or has_frustration:
+                category_high_priority = True
+                
+    # 4. Resolve Priority
+    if has_urgent_keyword or category_high_priority:
         priority = "High"
+    elif has_frustration or category_medium_priority or compound < -0.3:
+        priority = "High" if (compound < -0.3 and has_frustration) else "Medium"
     else:
-        # Fallback to compound score logic
-        if compound < -0.3:
-            priority = "High"
-        elif compound < 0.1:
+        if compound < 0.1:
             priority = "Medium"
         else:
             priority = "Low"
