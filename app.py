@@ -930,16 +930,7 @@ elif app_mode == "📥 Admin Ticket Queue":
                         "{t_detail['translation']}"
                     </p>
                     """
-                transcript_details += f"""
-                    <hr style="border-color: rgba(255,255,255,0.06); margin: 15px 0;">
-                    <div style="margin-top: 15px;">
-                        <span style="color: #94a3b8; font-size: 0.85rem;">Classification: </span>
-                        <span class="badge badge-Category">{t_detail['predicted_category']}</span>
-                        <span style="color: #94a3b8; font-size: 0.85rem; margin-left: 15px;">Model: </span>
-                        <span style="color: #FF6584; font-weight: 600; font-size: 0.9rem;">{t_detail['model_used'].upper()}</span>
-                        <span style="color: #94a3b8; font-size: 0.85rem; margin-left: 15px;">Sentiment: </span>
-                        <span class="badge badge-{t_detail['sentiment']}">{t_detail['sentiment']}</span>
-                    </div>
+                transcript_details += """
                 </div>
                 """
                 st.markdown(transcript_details, unsafe_allow_html=True)
